@@ -1,0 +1,8 @@
+local args = {
+   [1] = 9999999999999999, --Beli Ammount
+   [2] = 9999999999999999, --Exp Ammount
+   [3] = "Monkey",
+   [4] = 1 -- How Much You Want To Kill The Monkey
+}
+
+game:GetService("Players").LocalPlayer.Character.QuestNPCs.Server.GiveQuest:FireServer(unpack(args))
