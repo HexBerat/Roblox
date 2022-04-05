@@ -1,0 +1,3 @@
+_G.Christmas_Theme = false
+
+loadstring(game:HttpGet("https://therealcipher.github.io/Cipher-X/scripts/Obf_1.lua"))()
