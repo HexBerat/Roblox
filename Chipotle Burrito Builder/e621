@@ -1,0 +1,6 @@
+local remote = game:GetService("ReplicatedStorage").RemoteFunction
+while task.wait() do
+for i = 1,6 do
+task.spawn(remote.InvokeServer,remote,"EquipOutfit","Streetwear")
+end
+end
