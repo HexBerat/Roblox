@@ -1,0 +1,15 @@
+_G.toggle = true
+
+--there are different levels of orbs, change the number to the level you want(goes up to level 7)
+local aaw = 1
+
+local playerhead = game.Players.LocalPlayer.character.Head
+while _G.toggle do task.wait()
+   for i,v in pairs(game:GetService("Workspace").TimeSpheres[aaw]:GetDescendants()) do
+       if v.Name == "TouchInterest" and v.Parent then
+           firetouchinterest(playerhead, v.Parent, 0)
+           firetouchinterest(playerhead, v.Parent, 1)
+           wait(0.4)
+       end
+   end
+end
