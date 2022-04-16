@@ -1,0 +1,12 @@
+getgenv().autofarm_settings = {
+    specific_doodles = { --add a comma after each doodle except for the last one
+        "Glubbie",
+        "Wisp",
+        "Moss",
+        "Mold",
+        "Yagoat",
+        "Leapo",
+        "Glimmew"
+    }
+}
+loadstring(game:HttpGet("https://spelling.wtf/scripts/doodleworld.lua"))()
