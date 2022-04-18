@@ -1,0 +1,273 @@
+local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Kinlei/MaterialLua/master/Module.lua"))()
+
+local Window = Material.Load({
+	Title = "Bleus / Material Hub",
+	Style = 1,
+	SizeX = 500,
+	SizeY = 350,
+	Theme = "Jester",
+	ColorOverrides = {
+		MainFrame = Color3.fromRGB(235,235,235)
+	}
+})
+local Farms = Window.New({
+	Title = "Farms"
+})
+
+Farms.Toggle({
+	Text = "AutoClick",
+	Callback = function(State)
+		getgenv().AutoClick = State
+	end,
+	Enabled = false
+})
+
+
+
+local function AutoCollectOrbs(State)
+	getgenv().tog = true
+	while getgenv().tog == true do wait()
+		for i,v in pairs(game:GetService("Workspace"):GetDescendants()) do
+			if v.Name == "ResourceNode" then
+				while v.NodeType.Value ~= 0 do wait()
+				local root = game.Players.LocalPlayer.Character.HumanoidRootPart
+				root.CFrame = CFrame.new(v.Position)
+				game.Players.LocalPlayer.Character.Humanoid.Jump = true
+				end
+			end
+		end
+	end
+end
+
+Farms.Button({
+	Text = "AutoCollect Orbs (Once)",
+	Callback = AutoCollectOrbs
+})
+
+Farms.Toggle({
+	Text = "Speed",
+	Callback = function(State)
+		getgenv().Speed = State
+	end,
+	Enabled = false
+})
+
+local ShopRebirth = Window.New({
+	Title = "Shop / Rebirth"
+})
+
+local function Rebirth()
+	game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.GameService.RebirthRequest:InvokeServer()
+end
+
+ShopRebirth.Button({
+	Text = "Rebirth (Once)",
+	Callback = Rebirth
+})
+
+local function AutoRebirth(State)
+	getgenv().AutoRebirthState = State
+	while getgenv().AutoRebirthState do wait()
+		Rebirth()
+	end
+end
+
+ShopRebirth.Toggle({
+	Text = "Auto Rebirth",
+	Callback = AutoRebirth,
+	Enabled = false
+})
+
+ShopRebirth.Button({
+	Text = "Open Common Chest",
+	Callback = function()
+		local args = {
+			[1] = "t1_wpn_crate"
+		}
+	
+		game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.GameService.OpenCrate:InvokeServer(unpack(args))
+	end
+})
+
+local function AutoCommon(State)
+	getgenv().AutoCommonState = State
+	while getgenv().AutoCommonState do wait()
+		local args = {
+			[1] = "t1_wpn_crate"
+		}
+	
+		game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.GameService.OpenCrate:InvokeServer(unpack(args))
+	end
+end
+
+ShopRebirth.Toggle({
+	Text = "Auto Common Chest",
+	Callback = AutoCommon,
+	Enabled = false
+})
+
+
+ShopRebirth.Button({
+	Text = "Buy And Open Legendary Skin Chest",
+	Callback = function()
+		local args = {
+			[1] = "skin",
+			[2] = 1
+		}
+
+		game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.GameService.OpenLegendaryCrate:InvokeServer(unpack(args))
+	end
+})
+
+
+ShopRebirth.Button({
+	Text = "Buy And Open Legendary Weapon Chest",
+	Callback = function()
+		local args = {
+			[1] = "weapon",
+			[2] = 1
+		}
+
+		game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.GameService.OpenLegendaryCrate:InvokeServer(unpack(args))
+	end
+})
+
+ShopRebirth.Button({
+	Text = "Buy And Open Mythic Skin Chest",
+	Callback = function()
+		local args = {
+			[1] = "skin",
+			[2] = 1
+		}
+
+		game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.GameService.OpenMythicCrate:InvokeServer(unpack(args))
+	end
+})
+
+
+ShopRebirth.Button({
+	Text = "Buy And Open Mythic Weapon Chest",
+	Callback = function()
+		local args = {
+			[1] = "weapon",
+			[2] = 1
+		}
+
+		game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.GameService.OpenMythicCrate:InvokeServer(unpack(args))
+	end
+})
+
+--[[ 
+    Author: Scarlett
+    
+    Hope the little patch works, I might add a little bit more features but idk
+--]]
+
+-- Big thanks for Scarlett
+
+local quick = loadstring(game:HttpGet('https://raw.githubusercontent.com/Belkworks/quick/master/init.lua'))();
+
+repeat wait() until (game and game:IsLoaded());
+local s = quick.Service;
+
+local workspace = s.Workspace;
+local replicatedStorage = s.ReplicatedStorage;
+local currentCamera = workspace.CurrentCamera;
+local players = s.Players;
+local virtualUser = s.VirtualUser;
+local tweenService = s.TweenService;
+local runService = s.RunService;
+local stepped = runService.Stepped;
+
+local client = players.LocalPlayer;
+local character = client.Character or client.CharacterAdded:Wait();
+client.CharacterAdded:Connect(function(char)
+    character = char;
+end);
+
+if getconnections then
+    for i = 1, #getconnections(client.Idled) do
+        getconnections(client.Idled)[i]:Disable();
+    end;
+else
+    client.Idled:Connect(function()
+       virtualUser:Button2Down(Vector2.new(), currentCamera.CFrame);
+       wait(1);
+       virtualUser:Button2Up(Vector2.new(), currentCamera.CFrame);
+    end);
+end;
+
+local function tween(obj, time, ...)
+    local tween = tweenService:Create(obj, TweenInfo.new(time), ...);
+    tween:Play();
+    tween.Completed:Connect(function() tween:Destroy() end);
+	return tween;
+end;
+
+local function getNodeFolder()
+    for _, f in next, workspace.Scene:GetChildren() do
+        if type(tonumber(f.Name)) == 'number' then
+            return f;
+        end;
+    end;
+end;
+
+local function getANode()
+    local d, e = math.huge;
+    for _, v in next, getNodeFolder():GetChildren() do
+        if (v:FindFirstChild('Prefab') and #v.Prefab:GetChildren() > 0) then
+            local magnitude = client:DistanceFromCharacter(v.Position);
+            
+            if (magnitude <= d) then
+                d = magnitude;
+                e = v;
+            end;
+        end;
+    end;
+    return e;
+end;
+
+Farms.Toggle({
+	Text = 'Auto Farm',
+	Callback = function(v)
+		getgenv().autoFarmState = v;
+	end;
+});
+
+pcall(function() 
+    if getgenv().mainLoop then
+        getgenv().mainLoop:Disconnect();
+    end;
+end);
+getgenv().mainLoop = stepped:Connect(function()
+    if not character or (character and not (character:FindFirstChild('HumanoidRootPart') and character:FindFirstChild('Humanoid'))) then return end;
+    
+    if autoFarmState then
+        task.spawn(function()
+            replicatedStorage.Aero.AeroRemoteServices.GameService.WeaponAttackStart:FireServer();
+            wait(0.65);
+            replicatedStorage.Aero.AeroRemoteServices.GameService.WeaponAnimComplete:FireServer();
+        end);
+    
+        local node = getANode();
+        if node then
+            -- Did math.random because I was fresh out of brain juice LOL.
+            tween(character.HumanoidRootPart, client:DistanceFromCharacter(node.Position) / 2500, { CFrame = node.CFrame + Vector3.new(math.random(2, 5), 1, 0) }, Enum.EasingStyle.Linear);
+        end;
+    end;
+end);
+
+pcall(function()
+	if getgenv().autoclickloop then
+		getgenv().autoclickloop:Disconnect();
+	end;
+end);
+getgenv().autoclickloop = stepped:Connect(function()
+	if getgenv().AutoClick then
+		game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.GameService.WeaponAttackStart:FireServer()
+		game:GetService("ReplicatedStorage").Aero.AeroRemoteServices.GameService.WeaponAnimComplete:FireServer()
+	end
+	if getgenv().Speed then
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 200
+	end
+end)
