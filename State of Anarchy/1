@@ -1,0 +1,57 @@
+-- Variables
+
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+
+-- Settings
+
+bind = "h" -- has to be lowercase
+bind2 = "j"
+bind3 = "k"
+
+-- Script
+
+mouse.KeyDown:connect(function(key)
+if key == bind then
+for _, v in ipairs(game:GetService("Workspace"):GetDescendants()) do
+if v:IsA("Part") and v.Parent.Name == "T6 Weapon Stash" then
+v.Size = Vector3.new(5,5,5)
+v.CFrame = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
+wait(5)
+for _, v in ipairs(game:GetService("Workspace"):GetDescendants()) do
+if v:IsA("Part") and v.Parent.Name == "T5 Weapon Stash" then
+v.Size = Vector3.new(5,5,5)
+v.CFrame = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame
+wait(.1)
+end
+end
+end
+end
+end
+end)
+mouse.KeyDown:connect(function(key)
+if key == bind2 then
+----- kill players ---
+for i,v in pairs(game.Players:GetChildren()) do
+if v.Name ~= game.Players.LocalPlayer.Name then
+v.Character.Head.Anchored = true
+v.Character.Head.CFrame = game.Players.LocalPlayer.Character.Head.CFrame*CFrame.new(0,0,-5)
+end
+end
+
+--------
+wait(8)
+while wait(.0001) do
+for _, v in pairs(game:GetService("Players"):GetPlayers()) do
+v.Character.Head.CanCollide = false
+v.Character.Head.Size = Vector3.new(5, 5, 5)
+v.Character.Head.Transparency = 0
+end
+end
+end
+end)
+mouse.KeyDown:connect(function(key)
+if key == bind3 then
+               game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2734.616455078125, 188.390380859375, 545.9025268554688)
+end
+end)
