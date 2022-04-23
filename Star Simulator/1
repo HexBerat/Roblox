@@ -1,0 +1,74 @@
+--[[
+   made by bungie#8078
+   settings are below, be careful when changing them
+]]
+
+getgenv().Autofarm = true -- set true to autofarm objects
+
+-- // Remotes
+local hitObjectRemote = game:GetService("ReplicatedStorage").Attack.UpdateHPEvent
+local getResourceRemote = game:GetService("ReplicatedStorage").Resources.BuildingRemo
+local landShowRemote = game:GetService("ReplicatedStorage").PlayerData.Unlocker.LandShow
+local useMoneyRemote = game:GetService("ReplicatedStorage").PlayerData.Unlocker.UseMoney
+local conversionRemote = game:GetService("ReplicatedStorage").Resources.Conversion
+
+-- // Settings
+local iron, ironAmount = "IronPlate", 1e308 -- set 1e308 to whatever amount of iron you want to get
+local plank, plankAmount = "Plank", 1e308 -- set 1e308 to whatever amount of planks you want to get
+local weapon = "Axe" -- dont change
+local weapon2 = "Pickaxe" -- dont change
+local lag = false -- only set true if you have a good pc, will enable renderstepped loop instead (and may crash)
+local repeatAmount = 1 -- again only change if u have a good pc, will get rlly laggy and may crash
+
+-- // Services
+local runService = game:GetService("RunService")
+
+-- // Variables
+local location = workspace["Star_" .. game.Players.LocalPlayer.Name].Player
+
+-- // Show all Land
+function showLand()
+   for i,v in pairs(location.Land:GetChildren()) do
+       landShowRemote:FireServer(v)
+   end
+end
+--showLand()
+
+-- // Get max resources
+function getMaxResources()
+   getResourceRemote:InvokeServer(plank, plankAmount)
+   getResourceRemote:InvokeServer(iron, ironAmount)
+   conversionRemote:InvokeServer(iron, 1)
+   conversionRemote:InvokeServer(plank, 1)
+end
+--getMaxResources()
+
+-- // Loops
+if lag == false then
+   repeatAmount = 1
+end
+
+while Autofarm and lag == false and wait() do -- slower but more stable
+   -- // get Objects
+   for i,v in pairs(location.Land:GetDescendants()) do
+       if v:IsA("Model") and v.Name == "1" or v.Name == "2" or v.Name == "3" or "4" or "5" or "6" then
+           for i = 1, repeatAmount do
+               hitObjectRemote:FireServer(v, weapon)
+           end
+       end
+   end
+end
+
+runService.RenderStepped:Connect(function() -- faster but laggy
+   if lag and Autofarm then
+       -- // get Objects
+       for i,v in pairs(location.Land:GetDescendants()) do
+           if v:IsA("Model") and v.Name == "1" or v.Name == "2" or v.Name == "3" or "4" or "5" or "6" then
+               for i = 1, repeatAmount do
+                   hitObjectRemote:FireServer(v, weapon)
+                   hitObjectRemote:FireServer(v, weapon2)
+               end
+           end
+       end
+   end
+end)
