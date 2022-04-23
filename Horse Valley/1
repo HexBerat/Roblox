@@ -1,0 +1,82 @@
+local player = game.Players.LocalPlayer;
+local horses = workspace.Horses;
+local camera = workspace.CurrentCamera;
+
+local horse = horses[player.Name];
+
+if Drawings then
+   for i,v in next, Drawings do
+       v:Remove()
+       Drawings[i] = nil
+   end
+else
+   getgenv().Drawings = {};
+end
+
+local function drawLine(startPos, endPos, oldLine)
+   startPos, onScreen = camera:WorldToViewportPoint(startpos);
+   endPos, onScreen2 = camera:WorldToViewportPoint(endpos);
+   
+   
+   local line = oldLine or Drawing.new("Line");
+   if not onScreen or not onScreen2 then
+       line.Visible = false;
+       return;
+   end
+   line.From = Vector2.new(startPos.X, startPos.Y);
+   line.To = Vector2.new(endPos.X, endPos.Y)
+   
+   line.Thickness = 2;
+   line.Color = Color3.fromRGB(math.random(1,255),math.random(1,255),math.random(1,255));
+   line.Visible = true
+   table.insert(Drawings, line);
+   
+   return line;
+end
+
+local lines = {}
+local function drawHorse(horse)
+   if not lines[horse] then
+       lines[horse] = {};
+   end
+   
+   local env, horseLines = getfenv(), lines[horse];
+   
+   for i,v in next, horse:GetChildren() do
+       if v:IsA("MeshPart") then
+           env[v.Name] = v.CFrame.p;
+       end
+   end
+   
+   local paths = {
+       { FrontLeftFoot, FrontLowerLeftLeg, FrontMiddleLeftLeg, FrontUpperLeftLeg, UpperTorso },
+       { FrontRightFoot, FrontLowerRightLeg, FrontMiddleRightLeg, FrontUpperRightLeg, UpperTorso, Neck, Head},
+       { BackLeftFoot, BackLowerLeftLeg, BackMiddleLeftLeg, BackUpperLeftLeg, LowerTorso },
+       { BackRightFoot, BackLowerRightLeg, BackMiddleRightLeg, BackUpperRightLeg, LowerTorso, UpperTorso }
+   }
+   local counter = 0;
+   for index, path in next, paths do
+       for i = 1, #path - 1 do
+           local line = drawLine(path[i], path[i + 1], horseLines[counter]);
+           if not horseLines[counter] and line then
+               horseLines[counter] = line;
+           end
+           
+           counter = counter + 1;
+       end
+   end
+end
+
+for index, horse in next, horses:GetChildren() do
+   drawHorse(horse);
+   
+   horse.Changed:Connect(function()
+       drawHorse(horse);
+   end)
+end
+
+camera:GetPropertyChangedSignal("CFrame"):Connect(function()
+   for index, horse in next, horses:GetChildren() do
+       drawHorse(horse);
+   end
+end)
