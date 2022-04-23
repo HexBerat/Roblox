@@ -1,0 +1,80 @@
+repeat wait() until game:IsLoaded()
+
+local players = game:GetService("Players")
+local plr = players.LocalPlayer
+local plrGui = plr.PlayerGui
+
+
+function toboolean(str)
+    local bool = false
+    if str == "true" then
+        bool = true
+    end
+    return bool
+end
+
+writefile("APtoggle.txt", "true")
+
+local debounce = true
+spawn(function()
+    while wait() do
+        pcall(function()
+            wait(15)
+            if toboolean(readfile("APtoggle.txt")) == false 
+            and debounce 
+            and plrGui.Overlays.Standard.System.Destination.Visible == true then
+                local warpMenu = plrGui.QuickWarp
+            	keypress(0x20)
+            	keyrelease(0x20)
+                if plrGui.Overlays.Standard.Flying.Wrapper.HUD.Indicators.Warp.Visible == false then
+                    local holdSpace = coroutine.wrap(function()
+                        while wait() 
+                        and toboolean(readfile("APtoggle.txt")) == false 
+                        and debounce do    
+                            keypress(0x20)
+                        end
+                    end)
+                    holdSpace()
+
+                    local moveMouse = coroutine.wrap(function()
+                        while wait() 
+                        and toboolean(readfile("APtoggle.txt")) == false 
+                        and debounce do
+                            mousemoverel(0,10)
+                            for k,v in pairs(warpMenu.Items:GetChildren()) do
+                                if v:IsA("Frame") 
+                                and v.Icon.Image == "rbxassetid://3885669481" 
+                                and v.Icon.ImageColor3 ~= Color3.new(1,1,1)
+                                and v.Back.BackgroundTransparency == 0 then
+                                    keyrelease(0x20)
+                                    debounce = false
+                                    break
+                                end
+                            end
+                        end
+                    end)
+                    moveMouse()
+                end
+            end
+        end)
+    end
+end)
+
+
+syn.queue_on_teleport(game:HttpGet("https://pastebin.com/raw/2FJNuJwy", true))
+
+
+local Imput = game:GetService("UserInputService")
+Imput.InputBegan:Connect(function(input)
+	if Imput:IsKeyDown(Enum.KeyCode.F1) then
+	    if toboolean(readfile("APtoggle.txt")) == true then
+	        writefile("APtoggle.txt", "false")
+	        wait()
+	        debounce = true
+	    elseif toboolean(readfile("APtoggle.txt")) == false then
+	       writefile("APtoggle.txt", "true")
+	       wait()
+	       debounce = false
+	    end
+	end
+end)
